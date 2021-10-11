@@ -19,6 +19,3 @@ class Person
   end
 end
 
-person = Person.new(10)
-
-p person.can_use_services
