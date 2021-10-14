@@ -13,8 +13,8 @@ class App
 
   def run
     menu = ["\nPlease choose an option by entering a number", '1 - List all books', '2 - List all people',
-            '3 - Create a person', '4 - Create a book', '5 - Create a rental', '6 - List all rentals for a given person id',
-            '7 - Exit']
+            '3 - Create a person', '4 - Create a book', '5 - Create a rental',
+            '6 - List all rentals for a given person id', '7 - Exit']
     menu.each do |options|
       puts options
     end
@@ -28,9 +28,9 @@ class App
     print 'Name: '
     name = gets.chomp
     print 'Specialization: '
-    specialization = gets.chomp    
+    specialization = gets.chomp
     @people << Teacher.new(age, name, true, specialization)
-    puts "Person created successfully"
+    puts 'Person created successfully'
     run
   end
 
@@ -38,28 +38,27 @@ class App
     print 'Age: '
     age = gets.chomp.to_i
     print 'Name: '
-    name = gets.chomp      
-    print 'Has parente permission? [Y/N]: '  
+    name = gets.chomp
+    print 'Has parente permission? [Y/N]: '
     parent_permission = gets.chomp
-    if parent_permission == 'n'
-        parent_permission = false
-    end
+    parent_permission = false if parent_permission == 'n'
     @people << Student.new(age, name, parent_permission)
-    puts "Person created successfully"
+    puts 'Person created successfully'
     run
   end
 
   def create_person
     print 'Do you want to create a student (1) or a teacher (2)? [Input the number]: '
     option = gets.chomp.to_i
-    if option == 1
+    case option
+    when 1
       create_students
-    elsif option == 2
+    when 2
       create_teachers
     else
-      p 'Invalid number, type again!'
+      p 'Invalid number, returning to menu!'
       run
-    end    
+    end
   end
 
   def create_book
@@ -72,54 +71,61 @@ class App
     run
   end
 
-  def create_rental    
-    puts "\nSelect a book from the following list by number: "    
-    @book.each_with_index do |show, index|       
-        puts "#{index}) Title: #{show.title}  Author: #{show.author}"    
-    end      
+  def create_rental
+    puts "\nSelect a book from the following list by number: "
+    @book.each_with_index do |show, index|
+      puts "#{index}) Title: #{show.title}  Author: #{show.author}"
+    end
     book_rented = gets.chomp.to_i
     book_rented = @book[book_rented]
     puts "\nSelect a person from the following list by number (not ID): "
-    @people.each_with_index do |show, index| 
-        puts "#{index}) [#{show.class}] Name: #{show.name}, ID: #{show.id}, Age: #{show.age}"       
+    @people.each_with_index do |show, index|
+      puts "#{index}) [#{show.class}] Name: #{show.name}, ID: #{show.id}, Age: #{show.age}"
     end
     renter = gets.chomp.to_i
     renter = @people[renter]
     print "\nDate: "
     date = gets.chomp
     Rental.new(date, book_rented, renter)
-    puts "Rental created successfully"
+    puts 'Rental created successfully'
     run
   end
 
   def show_books
-    @book.each do |show| 
-        puts "Title: #{show.title}  Author: #{show.author}"        
+    @book.each do |show|
+      puts "Title: #{show.title}  Author: #{show.author}"
     end
     run
   end
 
   def show_people
-    @people.each do |show| 
-        puts "[#{show.class}] Name: #{show.name}, ID: #{show.id}, Age: #{show.age}"        
+    @people.each do |show|
+      puts "[#{show.class}] Name: #{show.name}, ID: #{show.id}, Age: #{show.age}"
     end
     run
   end
 
   def rental_id
-    print "ID of person: "
+    print 'ID of person: '
     id = gets.chomp.to_i
     @people.each do |person|
-        next unless id == person.id
-        target = person.rentals
-        puts "\nRentals: "
-        target.each do |rented|            
-            puts "Date: #{rented.date}, Book: #{rented.book.title} by #{rented.book.author}"
-        end
+      next unless id == person.id
+
+      target = person.rentals
+      puts "\nRentals: "
+      target.each do |rented|
+        puts "Date: #{rented.date}, Book: #{rented.book.title} by #{rented.book.author}"
+      end
     end
     run
-  end  
+  end
 
+  def finish_execution
+    puts '--Good Bye--'
+    exit(true)
+  end
+
+  # rubocop:disable Metrics/CyclomaticComplexity
   def check_option(option)
     case option
     when 1
@@ -135,10 +141,10 @@ class App
     when 6
       rental_id
     when 7
-      puts "--Good Bye--"
-      exit(true)
+      finish_execution
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 end
 
 def main
