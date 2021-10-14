@@ -125,26 +125,16 @@ class App
     exit(true)
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
   def check_option(option)
-    case option
-    when 1
-      show_books
-    when 2
-      show_people
-    when 3
-      create_person
-    when 4
-      create_book
-    when 5
-      create_rental
-    when 6
-      rental_id
-    when 7
-      finish_execution
+    option -= 1
+    functions = [method(:show_books), method(:show_people), method(:create_person),
+                 method(:create_book), method(:create_rental), method(:rental_id), method(:finish_execution)]
+    functions.each_with_index do |a, index|
+      next unless index == option
+
+      a.call
     end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
 end
 
 def main
